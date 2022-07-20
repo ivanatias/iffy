@@ -1,8 +1,15 @@
+import { Routes, Route } from 'react-router-dom'
+import { Layout } from './components'
+import { Gifs, Stickers } from './pages'
+
 const App = () => {
   return (
-    <div className='text-6xl underline text-red-500'>
-      <h1>Project initial setup</h1>
-    </div>
+    <Layout>
+      <Routes>
+        <Route path='/gifs' element={<Gifs />} />
+        <Route path='/stickers' element={<Stickers />} />
+      </Routes>
+    </Layout>
   )
 }
 

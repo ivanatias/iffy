@@ -1,5 +1,5 @@
 import React from 'react'
-import { Link } from 'react-router-dom'
+import { Link, useLocation } from 'react-router-dom'
 
 const sections = [
   {
@@ -12,13 +12,19 @@ const sections = [
   },
 ]
 
+const activeStyle = 'text-red-600'
+
 const Section = () => {
+  const { pathname } = useLocation()
+
   return (
     <div className='flex items-center justify-center gap-3'>
       {sections.map((section, index) => (
         <Link
           key={section.name + index}
-          className='text-sm lg:text-base hover:underline hover:text-red-700 cursor-pointer transition duration-200 ease'
+          className={`text-gray-100 text-sm lg:text-base hover:underline cursor-pointer transition duration-200 ease ${
+            pathname === section.path && activeStyle
+          }`}
           to={section.path}
         >
           {section.name}

@@ -1,36 +1,45 @@
 import React, { useState } from 'react'
-import { Grid } from '../components'
+import { Fallback, Grid, GridSkeleton, NextButton } from '../components'
 import { useFetchAndLoad } from '../hooks/useFetchAndLoad'
 import { useAsync } from '../hooks/useAsync'
+import { usePagination } from '../hooks/usePagination'
 import { getStickers } from '../services/public.service.stickers'
 import { stickersAdapter } from '../adapters/adapter.stickers'
 
-const Stickers = () => {
+const Stickers = ({ searchTerm }) => {
   const [stickers, setStickers] = useState([])
+  const { page, nextPage, hasMorePages, totalResultsSetter } = usePagination()
   const { callEndpoint, loading, error } = useFetchAndLoad()
 
-  const getApiData = async () => await callEndpoint(getStickers())
+  const getApiData = async () =>
+    await callEndpoint(getStickers(searchTerm, page))
 
   const adaptStickers = (results) => {
-    setStickers(stickersAdapter(results.data))
+    if (results) {
+      totalResultsSetter(results.pagination.total_count)
+      setStickers((prevGifs) => prevGifs.concat(stickersAdapter(results.data)))
+    }
   }
 
-  useAsync(getApiData, adaptStickers)
-
-  if (loading) return <div>Loading...</div>
-
-  if (error) return <div>{error.message}</div>
+  useAsync(getApiData, adaptStickers, null, [searchTerm, page])
 
   return (
     <>
-      {loading ? (
-        <div>Loading...</div>
-      ) : error ? (
-        <div>{error.message}</div>
-      ) : stickers.length ? (
-        <Grid items={stickers} />
+      {error ? (
+        <Fallback error={error} />
+      ) : loading && stickers.length === 0 ? (
+        <GridSkeleton />
+      ) : stickers.length === 0 ? (
+        <Fallback />
       ) : (
-        <div>No results found</div>
+        <Grid items={stickers} />
+      )}
+      {stickers.length > 0 && (
+        <NextButton
+          nextPage={nextPage}
+          hasMorePages={hasMorePages}
+          loading={loading}
+        />
       )}
     </>
   )

@@ -1,7 +1,7 @@
 import { useState, useEffect } from 'react'
 
 export const useFetchAndLoad = () => {
-  const [loading, setLoading] = useState(false)
+  const [loading, setLoading] = useState(true)
   const [error, setError] = useState(null)
   let controller
 
@@ -12,15 +12,15 @@ export const useFetchAndLoad = () => {
     try {
       response = await apiCall.call
       if (!response.ok) {
-        setLoading(false)
         throw new Error(`Request failed with status code ${response.status}`)
       }
       const results = await response.json()
-      setLoading(false)
       return results
     } catch (error) {
       setError(error)
       console.log(error)
+    } finally {
+      setLoading(false)
     }
   }
 

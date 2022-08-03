@@ -17,7 +17,9 @@ const Stickers = ({ searchTerm }) => {
   const adaptStickers = (results) => {
     if (results) {
       totalResultsSetter(results.pagination.total_count)
-      setStickers((prevGifs) => prevGifs.concat(stickersAdapter(results.data)))
+      setStickers((prevStickers) =>
+        prevStickers.concat(stickersAdapter(results.data))
+      )
     }
   }
 

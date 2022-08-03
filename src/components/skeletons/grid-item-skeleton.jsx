@@ -15,7 +15,7 @@ const GridItemHeader = () => (
 
 const GridItemImage = () => (
   <div>
-    <Skeleton width={200} height={200} />
+    <Skeleton width={200} height={100} />
   </div>
 )
 
